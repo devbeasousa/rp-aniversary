@@ -36,44 +36,38 @@ const meninas = [
 	{ nome: "Andressa", data: "21/11" },
 	{ nome: "Rafaella", data: "24/11" },
 	{ nome: "Vanessa Santos", data: "01/12" },
-	{ nome: "Annie", data: "21/12" },
 	{ nome: "Rayane", data: "26/04" },
 ];
 
-function obterSigno(nome, data) {
-	// Verifica se o nome é Annie e define como Capricórnio
-	if (nome === "Annie") {
-		return "♑️ Capricórnio";
-	}
-
+function obterSigno(data) {
 	const [dia, mes] = data.split("/").map(Number);
-	switch (mes) {
-		case 1:
-			return "♒️ Aquário";
-		case 2:
-			return "♓️ Peixes";
-		case 3:
-			return "♈️ Áries";
-		case 4:
-			return "♉️ Touro";
-		case 5:
-			return "♊️ Gêmeos";
-		case 6:
-			return "♋️ Câncer";
-		case 7:
-			return "♌️ Leão";
-		case 8:
-			return "♍️ Virgem";
-		case 9:
-			return "♎️ Libra";
-		case 10:
-			return "♏️ Escorpião";
-		case 11:
-			return "♐️ Sagitário";
-		case 12:
-			return "♑️ Capricórnio";
-		default:
-			return "❓ Desconhecido";
+
+	if ((mes === 1 && dia >= 20) || (mes === 2 && dia <= 18)) {
+		return "♒️ Aquário";
+	} else if ((mes === 2 && dia >= 19) || (mes === 3 && dia <= 20)) {
+		return "♓️ Peixes";
+	} else if ((mes === 3 && dia >= 21) || (mes === 4 && dia <= 19)) {
+		return "♈️ Áries";
+	} else if ((mes === 4 && dia >= 20) || (mes === 5 && dia <= 20)) {
+		return "♉️ Touro";
+	} else if ((mes === 5 && dia >= 21) || (mes === 6 && dia <= 20)) {
+		return "♊️ Gêmeos";
+	} else if ((mes === 6 && dia >= 21) || (mes === 7 && dia <= 22)) {
+		return "♋️ Câncer";
+	} else if ((mes === 7 && dia >= 23) || (mes === 8 && dia <= 22)) {
+		return "♌️ Leão";
+	} else if ((mes === 8 && dia >= 23) || (mes === 9 && dia <= 22)) {
+		return "♍️ Virgem";
+	} else if ((mes === 9 && dia >= 23) || (mes === 10 && dia <= 22)) {
+		return "♎️ Libra";
+	} else if ((mes === 10 && dia >= 23) || (mes === 11 && dia <= 21)) {
+		return "♏️ Escorpião";
+	} else if ((mes === 11 && dia >= 22) || (mes === 12 && dia <= 21)) {
+		return "♐️ Sagitário";
+	} else if ((mes === 12 && dia >= 22) || (mes === 1 && dia <= 19)) {
+		return "♑️ Capricórnio";
+	} else {
+		return "❓ Desconhecido";
 	}
 }
 
@@ -81,12 +75,41 @@ document.addEventListener("DOMContentLoaded", () => {
 	const container = document.getElementById("container");
 	const signos = {};
 
-	meninas.forEach((menina) => {
-		const signo = obterSigno(menina.nome, menina.data);
-		if (!signos[signo]) {
-			signos[signo] = [];
+	// Ordena as meninas por data de nascimento
+	meninas.sort((a, b) => {
+		const [diaA, mesA] = a.data.split("/").map(Number);
+		const [diaB, mesB] = b.data.split("/").map(Number);
+		if (mesA === mesB) {
+			return diaA - diaB;
 		}
-		signos[signo].push(menina);
+		return mesA - mesB;
+	});
+
+	// Remover Annie do signo de Sagitário, se estiver presente
+	const signoSagitario = "♐️ Sagitário";
+	if (signos[signoSagitario]) {
+		signos[signoSagitario] = signos[signoSagitario].filter(
+			(menina) => menina.nome !== "Annie"
+		);
+	}
+
+	// Adicionar Annie ao signo de Capricórnio manualmente
+	const annie = { nome: "Annie", data: "21/12" };
+	const signoCapricornio = "♑️ Capricórnio";
+	if (!signos[signoCapricornio]) {
+		signos[signoCapricornio] = [];
+	}
+	signos[signoCapricornio].push(annie);
+
+	meninas.forEach((menina) => {
+		// Excluir Annie da lista principal para evitar duplicação
+		if (menina.nome !== "Annie") {
+			const signo = obterSigno(menina.data);
+			if (!signos[signo]) {
+				signos[signo] = [];
+			}
+			signos[signo].push(menina);
+		}
 	});
 
 	for (const signo in signos) {
@@ -98,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		signos[signo].forEach((menina) => {
 			const meninaP = document.createElement("p");
-			meninaP.textContent = `${menina.nome} - ${menina.data}`;
+			meninaP.innerHTML = `<span class="bolinha"></span>${menina.nome} - ${menina.data}`;
 			signoDiv.appendChild(meninaP);
 		});
 
