@@ -1,6 +1,7 @@
 const meninas = [
 	{ nome: "Letícia Borges", data: "02/01" },
 	{ nome: "Rapha", data: "07/01" },
+	{ nome: "Mili Veras", data: "07/01" },
 	{ nome: "Maria Clara Santos", data: "08/01" },
 	{ nome: "Jéssica Lopes", data: "12/01" },
 	{ nome: "Bruna Oliveira", data: "15/01" },
